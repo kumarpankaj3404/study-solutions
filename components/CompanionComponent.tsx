@@ -7,6 +7,7 @@ import Image from 'next/image';
 import React, { useEffect, useRef, useState } from 'react'
 import soundwaves from '@/constants/soundwaves.json'
 import { Variable } from 'lucide-react';
+import { addToSessionHistory } from '@/lib/actions/companions.actions';
 
 enum CallStatus{
     INACTIVE = 'INACTIVE',
@@ -33,7 +34,11 @@ const CompanionComponent = ({companionId, subject, topic, name, userName, userIm
     },[isSpeaking,lottieRef])
     useEffect(() =>{
         const onCallStart = () => setCallStatus(CallStatus.ACTIVE);
-        const onCallEnd = () => setCallStatus(CallStatus.FINISHED);
+        const onCallEnd = () => {
+            setCallStatus(CallStatus.FINISHED);
+            //Add session history 
+            addToSessionHistory(companionId)
+        }
         const onMessage = (message: Message) => {
             if(message.type === 'transcript' && message.transcriptType === 'final'){
                 const newMessage = {role: message.role, content: message.transcript}
