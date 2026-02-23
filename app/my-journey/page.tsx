@@ -10,6 +10,7 @@ import { getUserCompanions, getUserSessions } from "@/lib/actions/companions.act
 import Image from "next/image";
 import CompanionsList from "@/components/CompanionsList";
 
+export const dynamic = 'force-dynamic';
 
 const Profile = async() => {
   const user = await currentUser();
