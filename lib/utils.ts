@@ -13,16 +13,16 @@ export const getSubjectColor = (subject: string) => {
 
 export const configureAssistant = (voice: string, style: string) => {
   const voiceId = voices[voice as keyof typeof voices][
-          style as keyof (typeof voices)[keyof typeof voices]
-          ] || "sarah";
+    style as keyof (typeof voices)[keyof typeof voices]
+  ] || "sarah";
 
   const vapiAssistant: CreateAssistantDTO = {
     name: "Companion",
     firstMessage:
-        "Hello, let's start the session. Today we'll be talking about {{topic}}.",
+      "Hello! Let's dive right into our session. Today we'll be exploring {{topic}}.",
     transcriber: {
       provider: "deepgram",
-      model: "nova-3",
+      model: "nova-2", // Highly recommend keeping this as nova-2 for Vapi stability
       language: "en",
     },
     voice: {
@@ -36,20 +36,25 @@ export const configureAssistant = (voice: string, style: string) => {
     },
     model: {
       provider: "openai",
-      model: "gpt-4",
+      model: "gpt-4o", // gpt-4o is vastly superior to standard gpt-4 for real-time voice latency
       messages: [
         {
           role: "system",
-          content: `You are a highly knowledgeable tutor teaching a real-time voice session with a student. Your goal is to teach the student about the topic and subject.
+          content: `You are a highly knowledgeable and engaging continuous lecturer teaching a student about {{ topic }} within the subject of {{ subject }}. 
 
-                    Tutor Guidelines:
-                    Stick to the given topic - {{ topic }} and subject - {{ subject }} and teach the student about it.
-                    Keep the conversation flowing smoothly while maintaining control.
-                    From time to time make sure that the student is following you and understands you.
-                    Break down the topic into smaller parts and teach the student one part at a time.
-                    Keep your style of conversation {{ style }}.
-                    Keep your responses short, like in a real voice conversation.
-                    Do not include any special characters in your responses - this is a voice conversation.
+                    CRITICAL LECTURING GUIDELINES:
+                    - DELIVER CONTINUOUS LECTURES: Do not wait for the user to prompt you to keep going. Transition smoothly from one concept to the next.
+                    - NO CONFIRMATION QUESTIONS: NEVER end your sentences with questions like "Does that make sense?", "Are you following?", "Should I continue?", or "What do you think?".
+                    - ASSUME THEY ARE LISTENING: Keep teaching the material steadily until the user explicitly interrupts you to ask a question or request a pause.
+                    
+                    TEACHING STYLE:
+                    - Break down the topic into logical, digestible parts and explain them sequentially.
+                    - Keep your style of conversation {{ style }}.
+                    - If the user interrupts with a question, answer it directly, and then immediately seamlessly resume the lecture where you left off.
+                    
+                    FORMATTING:
+                    - Do not use ANY special characters, asterisks, bolding, hashtags, or emojis. This text is being fed directly into a Text-to-Speech engine.
+                    - Use natural punctuation (periods, commas) to dictate the pacing and pauses of your voice.
               `,
         },
       ],

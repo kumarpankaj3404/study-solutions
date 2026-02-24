@@ -5,7 +5,8 @@ const isPublicRoute = createRouteMatcher([
   "/sign-up(.*)",
   "/api/webhooks(.*)",
   "/",
-  "/companions(.*)" // Assuming companions is public as per file structure; adjust if needed
+  "/companions(.*)", // Assuming companions is public as per file structure; adjust if needed
+  "/monitoring(.*)" 
 ]);
 
 export default clerkMiddleware(async (auth, request) => {

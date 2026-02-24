@@ -23,7 +23,7 @@ const CompanionsLibrary = async ({searchParams} : SearchParams) => {
         </div>
       </section>
       <section className='companions-grid'>
-        {companions.map((companion) =>(
+        {companions?.map((companion) =>(
           <CompanionCard
             key={companion.id}
             {...companion}
