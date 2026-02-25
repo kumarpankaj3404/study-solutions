@@ -5,8 +5,9 @@ import { usePathname } from "next/navigation"
 
 const navItems = [
     { name: 'Home', href: '/' },
+    { name: 'About', href: '/about' },
     { name: 'Companions', href: '/companions' },
-    { name: 'My Journey', href: '/my-journey' },
+    { name: 'My Journey', href: '/my-journey' }
 ]
 const NavItems = () => {
     const pathName = usePathname();

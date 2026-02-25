@@ -7,6 +7,34 @@ export const subjects = [
   "economics",
 ];
 
+export const scrollContent = [
+  {
+    title : "Science",
+    description : "Explore the wonders of the natural world with our science resources, covering topics from physics to biology and everything in between.",
+    img: "/icons/science.svg" 
+  },{
+    title : "Maths",
+    description : "Master the art of numbers and equations with our comprehensive maths resources, designed to help you excel in algebra, geometry, calculus, and more.",
+    img: "/icons/maths.svg"
+  },{
+    title : "Language",
+    description : "Enhance your language skills with our diverse resources, including grammar guides, vocabulary builders, and literature analysis to help you communicate effectively.",
+    img: "/icons/language.svg"
+  },{
+    title : "Coding",
+    description : "Unlock the world of programming with our coding resources, offering tutorials, practice exercises, and project ideas to help you become a proficient coder.",
+    img: "/icons/coding.svg"
+  },{
+    title : "History",
+    description : "Dive into the past with our history resources, covering significant events, influential figures, and cultural movements that have shaped our world.",
+    img: "/icons/history.svg"
+  },{
+    title : "Economics",
+    description : "Understand the principles of economics with our comprehensive resources, including microeconomics, macroeconomics, and real-world applications to help you grasp economic concepts.",
+    img: "/icons/economics.svg"
+  }
+]
+
 export const subjectsColors = {
   science: "#E5D0FF",
   maths: "#FFDA6E",
