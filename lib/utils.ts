@@ -16,14 +16,20 @@ export const configureAssistant = (voice: string, style: string) => {
     style as keyof (typeof voices)[keyof typeof voices]
   ] || "sarah";
 
-  const vapiAssistant: CreateAssistantDTO = {
+  const vapiAssistant = {
     name: "Companion",
     firstMessage:
       "Hello! Let's dive right into our session. Today we'll be exploring {{topic}}.",
+    maxDurationSeconds: 1800,
+    backgroundSound: "off",
+    stopSpeakingPlan: {
+      numWords: 3,
+    },
     transcriber: {
       provider: "deepgram",
       model: "nova-2", // Highly recommend keeping this as nova-2 for Vapi stability
       language: "en",
+      smartFormat: true,
     },
     voice: {
       provider: "11labs",
@@ -46,6 +52,7 @@ export const configureAssistant = (voice: string, style: string) => {
                     - DELIVER CONTINUOUS LECTURES: Do not wait for the user to prompt you to keep going. Transition smoothly from one concept to the next.
                     - NO CONFIRMATION QUESTIONS: NEVER end your sentences with questions like "Does that make sense?", "Are you following?", "Should I continue?", or "What do you think?".
                     - ASSUME THEY ARE LISTENING: Keep teaching the material steadily until the user explicitly interrupts you to ask a question or request a pause.
+                    - SILENCE HANDLING: If you ask a question or pause for the user, and they do not respond after a few seconds, seamlessly answer your own question or continue the lecture without waiting indefinitely.
                     
                     TEACHING STYLE:
                     - Break down the topic into logical, digestible parts and explain them sequentially.
@@ -62,5 +69,5 @@ export const configureAssistant = (voice: string, style: string) => {
     clientMessages: ["transcript", "hang", "function-call", "speech-update", "metadata", "conversation-update"] as any,
     serverMessages: ["end-of-call-report", "status-update", "hang", "function-call"] as any,
   };
-  return vapiAssistant;
+  return vapiAssistant as unknown as CreateAssistantDTO;
 };

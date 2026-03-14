@@ -22,6 +22,7 @@ const CompanionComponent = ({ companionId, subject, topic, name, userName, userI
     const [messages, setMessages] = useState<SavedMessage[]>([]);
 
     const lottieRef = useRef<LottieRefCurrentProps>(null);
+    const silenceTimerRef = useRef<NodeJS.Timeout | null>(null);
 
     useEffect(() => {
         if (lottieRef) {
@@ -45,8 +46,31 @@ const CompanionComponent = ({ companionId, subject, topic, name, userName, userI
                 setMessages((prev) => [newMessage, ...prev])
             }
         }
-        const onSpeechStart = () => setIsSpeaking(true);
-        const onSpeechEnd = () => setIsSpeaking(false);
+        const onSpeechStart = () => {
+            setIsSpeaking(true);
+            // User has spoken, or assistant is speaking. Clear the auto-resume timer.
+            if (silenceTimerRef.current) {
+                clearTimeout(silenceTimerRef.current);
+            }
+        }
+        const onSpeechEnd = () => {
+            setIsSpeaking(false);
+            // When assistant finishes speaking, wait 10 seconds. If no user speech starts, trigger auto-resume
+            if (silenceTimerRef.current) {
+                clearTimeout(silenceTimerRef.current);
+            }
+            silenceTimerRef.current = setTimeout(() => {
+                if (callStatus === CallStatus.ACTIVE) {
+                    vapi.send({
+                        type: "add-message",
+                        message: {
+                            role: "system",
+                            content: "The user has been silent for a few seconds. Please seamlessly answer your own question or continue with your lecture."
+                        }
+                    })
+                }
+            }, 10000); // 10 seconds of silence allowed
+        }
         const onError = (error: Error) => console.log('Error', error);
 
         vapi.on('call-start', onCallStart);
@@ -63,9 +87,12 @@ const CompanionComponent = ({ companionId, subject, topic, name, userName, userI
             vapi.off('error', onError);
             vapi.off('speech-start', onSpeechStart);
             vapi.off('speech-end', onSpeechEnd);
+            if (silenceTimerRef.current) {
+                clearTimeout(silenceTimerRef.current);
+            }
         }
 
-    }, [])
+    }, [callStatus])
 
     const toggleMicrophone = () => {
         try {
@@ -92,6 +119,9 @@ const CompanionComponent = ({ companionId, subject, topic, name, userName, userI
 
     }
     const handleDisconnect = async () => {
+        if (silenceTimerRef.current) {
+            clearTimeout(silenceTimerRef.current);
+        }
         setCallStatus(CallStatus.FINISHED)
         vapi.stop()
     }
